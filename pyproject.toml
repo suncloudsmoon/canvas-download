@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling >= 1.27"]
+build-backend = "hatchling.build"
+
+[project]
+dependencies = [
+    "canvasapi >= 3.3.0",
+    "tqdm >= 4.67.1"
+]
+name = "canvas-download"
+version = "1.0.0"
+authors = [
+    {name="suncloudsmoon", email="farsaturn@outlook.com"}
+]
+description = "Automatically downloads Canvas modules/files into a local directory."
+keywords = ["canvas", "download", "canvas-grab"]
+readme="README.md"
+requires-python = ">= 3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/suncloudsmoon/canvas-download"
+Issues = "https://github.com/suncloudsmoon/canvas-download/issues"
+
+[project.scripts]
+canvas-download = "canvas_download:main"
