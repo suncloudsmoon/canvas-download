@@ -31,7 +31,7 @@ def main():
         contents = json.dumps({"API_URL": "", "API_KEY": ""}, indent=4)
         login_path.write_text(contents, encoding="utf-8")
         print(
-            f"Fill out the details of your canvas login credentials at {login_path} and relaunch this application to continue. Note: '.config' directory is hidden."
+            f"Fill out the details of your canvas login credentials at '{login_path}' and relaunch this application to continue. Note: '.config' directory is hidden."
         )
         return
 
