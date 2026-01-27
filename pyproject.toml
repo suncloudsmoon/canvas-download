@@ -5,20 +5,31 @@ build-backend = "hatchling.build"
 [project]
 dependencies = [
     "canvasapi >= 3.3.0",
-    "tqdm >= 4.67.1"
+    "tqdm >= 4.67.1",
+    "pywin32; platform_system == 'Windows'"
 ]
 name = "canvas-download"
-version = "1.0.0"
+version = "1.1.0"
 authors = [
     {name="suncloudsmoon", email="farsaturn@outlook.com"}
 ]
-description = "Automatically downloads Canvas modules/files into a local directory."
-keywords = ["canvas", "download", "canvas-grab"]
+description = "Downloads Canvas modules/files into a local directory."
+keywords = ["canvas", "download", "canvas-grab", "sync", "utility", "downloader", "canvas", "offline"]
 readme="README.md"
 requires-python = ">= 3.10"
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Utilities",
+    "Intended Audience :: Education"
 ]
 license = "MIT"
 license-files = ["LICEN[CS]E*"]

@@ -1,25 +1,41 @@
 """
-Create a file called login.json with the following:
-{
-    "API_URL": "",
-    "API_KEY": ""
-}
+canvas-download allows you to download files from canvas with a single command.
 """
 
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 from canvasapi import Canvas
 from tqdm import tqdm
 
+if sys.platform == "win32":
+    import win32api
+    import win32con
+
 
 def get_valid_filename(filename: str):
-    return re.sub(r'[<>:"\|\\/\?\*]', " ", filename).strip()
+    return re.sub(r'[<>:"\|\\/\?\*]', " ", filename).strip().strip(".")
+
 
 def main():
-    contents = Path("login.json").read_text(encoding="utf-8")
+    config_dir = Path(".config")
+    login_path = config_dir / "login.json"
+    if not courses_path.exists():
+        courses_path.mkdir()
+        if sys.platform == "win32":
+            win32api.SetFileAttributes(str(config_dir), win32con.FILE_ATTRIBUTE_HIDDEN)
+        
+        contents = json.dumps({"API_URL": "", "API_KEY": ""}, indent=4)
+        login_path.write_text(contents, encoding="utf-8")
+        print(
+            f"Fill out the details of your canvas login credentials at {login_path} and relaunch this application to continue. Note: '.config' directory is hidden."
+        )
+        return
+
+    contents = login_path.read_text(encoding="utf-8")
     login = json.loads(contents)
     canvas = Canvas(login["API_URL"], login["API_KEY"])
 
@@ -34,22 +50,23 @@ def main():
     if not current_courses:
         raise LookupError("no enrolled courses found")
 
-    config_path = Path("config.json")
+    courses_path = config_dir / "courses.json"
     names_courses = {
         re.search(r"\w\S+-\S+\w", course.name).group(0).replace("-", " "): course
         for course in current_courses
     }
-    if not config_path.exists():
+    if not courses_path.exists():
         config = {k: "modules" for k in names_courses}
-        config_path.write_text(json.dumps(config, indent=4), encoding="utf-8")
+        courses_path.write_text(json.dumps(config, indent=4), encoding="utf-8")
         print("Welcome to canvas sync...")
         print("config.json has been created; change settings if needed")
     else:
-        contents = config_path.read_text(encoding="utf-8")
+        contents = courses_path.read_text(encoding="utf-8")
         config = json.loads(contents)
         # config validation
         if not all(name in config for name in names_courses) or not all(
-            val.lower() == "modules" or val.lower() == "files" for val in config.values()
+            val.lower() == "modules" or val.lower() == "files"
+            for val in config.values()
         ):
             raise ValueError("invalid config")
 
