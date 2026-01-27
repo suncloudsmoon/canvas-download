@@ -23,8 +23,8 @@ def get_valid_filename(filename: str):
 def main():
     config_dir = Path(".config")
     login_path = config_dir / "login.json"
-    if not courses_path.exists():
-        courses_path.mkdir()
+    if not config_dir.exists():
+        config_dir.mkdir()
         if sys.platform == "win32":
             win32api.SetFileAttributes(str(config_dir), win32con.FILE_ATTRIBUTE_HIDDEN)
         
