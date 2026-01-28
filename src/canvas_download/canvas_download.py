@@ -52,7 +52,7 @@ def main():
 
     courses_path = config_dir / "courses.json"
     names_courses = {
-        re.search(r"\w\S+-\S+\w", course.name).group(0).replace("-", " "): course
+        get_valid_filename(course.name).replace("-", " "): course
         for course in current_courses
     }
     if not courses_path.exists():
