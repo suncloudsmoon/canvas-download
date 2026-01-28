@@ -27,7 +27,7 @@ def main():
         config_dir.mkdir()
         if sys.platform == "win32":
             win32api.SetFileAttributes(str(config_dir), win32con.FILE_ATTRIBUTE_HIDDEN)
-        
+
         contents = json.dumps({"API_URL": "", "API_KEY": ""}, indent=4)
         login_path.write_text(contents, encoding="utf-8")
         print(
@@ -56,11 +56,11 @@ def main():
     names_courses = {}
     for course in current_courses:
         name = course.name
-        short_name = re.search(r"\w\S+-\S+\w", name).group(0)
-        if short_name:
-            names_courses[short_name.replace("-", " ")] = course
-        else:
-            names_courses[name] = course
+        results = re.search(r"\w\S+-\S+\w", name)
+        if results:
+            name = results.group(0).replace("-", " ")
+
+        names_courses[name] = course
 
     if not courses_path.exists():
         config = {k: "modules" for k in names_courses}
