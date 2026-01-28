@@ -51,10 +51,17 @@ def main():
         raise LookupError("no enrolled courses found")
 
     courses_path = config_dir / "courses.json"
-    names_courses = {
-        get_valid_filename(course.name).replace("-", " "): course
-        for course in current_courses
-    }
+
+    # To get a pretty course name
+    names_courses = {}
+    for course in current_courses:
+        name = course.name
+        short_name = re.search(r"\w\S+-\S+\w", name).group(0)
+        if short_name:
+            names_courses[short_name.replace("-", " ")] = course
+        else:
+            names_courses[name] = course
+
     if not courses_path.exists():
         config = {k: "modules" for k in names_courses}
         courses_path.write_text(json.dumps(config, indent=4), encoding="utf-8")
