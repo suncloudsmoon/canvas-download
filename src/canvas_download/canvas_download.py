@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from canvasapi import Canvas
+from canvasapi.exceptions import Forbidden
 from tqdm import tqdm
 
 if sys.platform == "win32":
@@ -92,16 +93,20 @@ def main():
                                 file.download(str(file_path))
             elif user_choice == "files":
                 for folder in course.get_folders():
-                    full_path = Path(folder.full_name)
+                    folder_name = folder.full_name
+                    full_path = Path(folder_name)
                     folder_path = (
                         course_path / full_path.relative_to(full_path.parts[0])
                         if full_path.parts[0] == "course files"
                         else None
                     )
                     folder_path.mkdir(parents=True, exist_ok=True)
-                    for file in folder.get_files():
-                        if file.locked:
-                            continue
-                        file_path = folder_path / get_valid_filename(file.display_name)
-                        if not file_path.exists():
-                            file.download(str(file_path))
+                    try:
+                        for file in folder.get_files():
+                            if file.locked:
+                                continue
+                            file_path = folder_path / get_valid_filename(file.display_name)
+                            if not file_path.exists():
+                                file.download(str(file_path))
+                    except Forbidden as err:
+                        print(err)
