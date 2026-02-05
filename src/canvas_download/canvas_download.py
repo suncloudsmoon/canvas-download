@@ -108,5 +108,5 @@ def main():
                             file_path = folder_path / get_valid_filename(file.display_name)
                             if not file_path.exists():
                                 file.download(str(file_path))
-                    except Forbidden as err:
+                    except Forbidden | ResourceDoesNotExist as err:
                         print(err)
