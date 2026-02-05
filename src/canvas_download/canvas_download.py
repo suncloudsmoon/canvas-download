@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from canvasapi import Canvas
-from canvasapi.exceptions import Forbidden
+from canvasapi.exceptions import Forbidden, ResourceDoesNotExist
 from tqdm import tqdm
 
 if sys.platform == "win32":
@@ -85,12 +85,18 @@ def main():
                 for module in course.get_modules():
                     module_path = course_path / get_valid_filename(module.name)
                     module_path.mkdir(parents=True, exist_ok=True)
-                    for item in module.get_module_items():
-                        if item.type == "File":
-                            file_path = module_path / get_valid_filename(item.title)
-                            if not file_path.exists():
-                                file = course.get_file(item.content_id)
-                                file.download(str(file_path))
+                    try:
+                        for item in module.get_module_items():
+                            if item.type == "File":
+                                file_path = module_path / get_valid_filename(item.title)
+                                if not file_path.exists():
+                                    file = course.get_file(item.content_id)
+                                    try:
+                                        file.download(str(file_path))
+                                    except ResourceDoesNotExist as err:
+                                        print(err)
+                    except Forbidden as err:
+                        print(err)
             elif user_choice == "files":
                 for folder in course.get_folders():
                     folder_name = folder.full_name
@@ -107,6 +113,9 @@ def main():
                                 continue
                             file_path = folder_path / get_valid_filename(file.display_name)
                             if not file_path.exists():
-                                file.download(str(file_path))
-                    except Forbidden | ResourceDoesNotExist as err:
+                                try:
+                                    file.download(str(file_path))
+                                except ResourceDoesNotExist as err:
+                                    print(err)
+                    except Forbidden as err:
                         print(err)
